@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
       stream: FirebaseAuth.instance.onAuthStateChanged,
       builder: (context, snapshot) {
         if (snapshot.hasData)
-          return HomeScreen();
+          return HomeScreen(userId: snapshot.data.uid);
         else
           return LoginScreen();
       },
@@ -24,6 +24,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Instagram clone',
       theme: ThemeData(
+        primaryIconTheme: Theme.of(context).primaryIconTheme.copyWith(color: Colors.black),
         primarySwatch: Colors.blue,
       ),
       home: _getScreenId(),
