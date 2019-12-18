@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:instagram_clone/screens/FeedScreen.dart';
+import 'package:instagram_clone/screens/HomeScreen.dart';
 import 'package:instagram_clone/screens/LoginScreen.dart';
 
 class AuthService {
@@ -22,7 +22,7 @@ class AuthService {
           'profileImageUrl': '',
         });
         Navigator.of(context)
-            .pushNamedAndRemoveUntil(FeedScreen.id, (route) => false);
+            .pushNamedAndRemoveUntil(HomeScreen.id, (route) => false);
       }
     } catch (e) {
       print(e);
@@ -35,7 +35,7 @@ class AuthService {
     try {
       _auth.signInWithEmailAndPassword(email: email, password: password);
       Navigator.of(context)
-          .pushNamedAndRemoveUntil(FeedScreen.id, (route) => false);
+          .pushNamedAndRemoveUntil(HomeScreen.id, (route) => false);
     } catch (e) {
       print(e);
       Navigator.pop(context);
