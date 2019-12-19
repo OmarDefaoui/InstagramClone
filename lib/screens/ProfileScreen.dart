@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:instagram_clone/models/UserModel.dart';
 import 'package:instagram_clone/screens/EditProfileScreen.dart';
 import 'package:instagram_clone/utilities/Constants.dart';
+import 'package:instagram_clone/widgets/MyAppBar.dart';
 
 class ProfileScreen extends StatefulWidget {
   final String userId;
@@ -38,6 +39,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: MyAppBar(),
       body: FutureBuilder(
           future: usersRef.document(widget.userId).get(),
           builder: (context, snapshot) {

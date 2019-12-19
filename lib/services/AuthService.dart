@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:instagram_clone/screens/HomeScreen.dart';
+import 'package:instagram_clone/models/UserData.dart';
+import 'package:provider/provider.dart';
 
 class AuthService {
   static final _auth = FirebaseAuth.instance;
@@ -19,6 +20,7 @@ class AuthService {
           'email': email,
           'profileImageUrl': '',
         });
+        Provider.of<UserData>(context).currentUserId = signedInUser.uid;
         Navigator.pop(context);
       }
     } catch (e) {
@@ -29,8 +31,6 @@ class AuthService {
   static void login(BuildContext context, String email, String password) async {
     try {
       _auth.signInWithEmailAndPassword(email: email, password: password);
-      Navigator.of(context)
-          .pushNamedAndRemoveUntil(HomeScreen.id, (route) => false);
     } catch (e) {
       print(e);
     }

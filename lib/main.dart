@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:instagram_clone/models/UserData.dart';
 import 'package:instagram_clone/screens/HomeScreen.dart';
 import 'package:instagram_clone/screens/LoginScreen.dart';
 import 'package:instagram_clone/screens/SignUpScreen.dart';
+import 'package:provider/provider.dart';
 
 void main() => runApp(MyApp());
 
@@ -11,9 +13,10 @@ class MyApp extends StatelessWidget {
     return StreamBuilder<FirebaseUser>(
       stream: FirebaseAuth.instance.onAuthStateChanged,
       builder: (context, snapshot) {
-        if (snapshot.hasData)
-          return HomeScreen(userId: snapshot.data.uid);
-        else
+        if (snapshot.hasData) {
+          Provider.of<UserData>(context).currentUserId = snapshot.data.uid;
+          return HomeScreen();
+        } else
           return LoginScreen();
       },
     );
@@ -21,18 +24,21 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Instagram clone',
-      theme: ThemeData(
-        primaryIconTheme: Theme.of(context).primaryIconTheme.copyWith(color: Colors.black),
-        primarySwatch: Colors.blue,
+    return ChangeNotifierProvider(
+      create: (context) => UserData(),
+      child: MaterialApp(
+        title: 'Instagram clone',
+        theme: ThemeData(
+          primaryIconTheme:
+              Theme.of(context).primaryIconTheme.copyWith(color: Colors.black),
+          primarySwatch: Colors.blue,
+        ),
+        home: _getScreenId(),
+        routes: {
+          LoginScreen.id: (context) => LoginScreen(),
+          SignUpScreen.id: (context) => SignUpScreen(),
+        },
       ),
-      home: _getScreenId(),
-      routes: {
-        LoginScreen.id: (context) => LoginScreen(),
-        SignUpScreen.id: (context) => SignUpScreen(),
-        LoginScreen.id: (context) => LoginScreen(),
-      },
     );
   }
 }

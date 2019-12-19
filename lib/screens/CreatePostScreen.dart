@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:instagram_clone/widgets/MyAppBar.dart';
 
 class CreatePostScreen extends StatefulWidget {
 
@@ -10,6 +11,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: MyAppBar(),
       body: Center(
         child: Text('Create post screen'),
       ),

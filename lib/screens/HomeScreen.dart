@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:instagram_clone/models/UserData.dart';
 import 'package:instagram_clone/screens/ActivityScreen.dart';
 import 'package:instagram_clone/screens/CreatePostScreen.dart';
 import 'package:instagram_clone/screens/FeedScreen.dart';
 import 'package:instagram_clone/screens/ProfileScreen.dart';
 import 'package:instagram_clone/screens/SearchScreen.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
-  static final String id = 'HomeScreen';
-  final String userId;
-
-  HomeScreen({this.userId});
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -29,20 +27,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        
-        backgroundColor: Colors.white,
-        title: Center(
-          child: Text(
-            'Instagram',
-            style: TextStyle(
-              fontSize: 35,
-              color: Colors.black,
-              fontFamily: 'Billabong',
-            ),
-          ),
-        ),
-      ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         currentIndex: _currentTab,
@@ -94,7 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
             SearchScreen(),
             CreatePostScreen(),
             ActivityScreen(),
-            ProfileScreen(userId: widget.userId),
+            ProfileScreen(userId: Provider.of<UserData>(context).currentUserId),
           ],
         ),
       ),
