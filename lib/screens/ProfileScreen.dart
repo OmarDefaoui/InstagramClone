@@ -5,7 +5,6 @@ import 'package:instagram_clone/models/UserModel.dart';
 import 'package:instagram_clone/screens/EditProfileScreen.dart';
 import 'package:instagram_clone/services/FirestoreService.dart';
 import 'package:instagram_clone/utilities/Constants.dart';
-import 'package:instagram_clone/widgets/MyAppBar.dart';
 import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -33,7 +32,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: myappbar(),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        title: Text(
+          'Profile',
+          style: TextStyle(
+            color: Colors.black,
+          ),
+        ),
+      ),
       body: FutureBuilder(
           future: usersRef.document(widget.userId).get(),
           builder: (context, snapshot) {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:instagram_clone/services/AuthService.dart';
 
 class ActivityScreen extends StatefulWidget {
 
@@ -11,7 +12,10 @@ class _ActivityScreenState extends State<ActivityScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Text('Activity screen'),
+        child: FlatButton(
+          onPressed: ()=>AuthService.signOut(context),
+          child: Text('Sign out'),
+        ),
       ),
     );
   }

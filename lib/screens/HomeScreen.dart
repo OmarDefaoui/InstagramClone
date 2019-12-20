@@ -75,7 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
           },
           controller: _pageController,
           children: <Widget>[
-            FeedScreen(),
+            FeedScreen(currentUserId: _currentUserId),
             SearchScreen(),
             CreatePostScreen(),
             ActivityScreen(),

@@ -94,4 +94,25 @@ class FirestoreService {
 
     return followingSnapshot.documents.length;
   }
+
+  static Future<List<PostModel>> getFeedPosts(String userId) async {
+    QuerySnapshot feedSnapshot = await feedsRef
+        .document(userId)
+        .collection('userFeed')
+        .orderBy('timestamp', descending: true)
+        .getDocuments();
+
+    List<PostModel> posts =
+        feedSnapshot.documents.map((doc) => PostModel.fromDoc(doc)).toList();
+
+    return posts;
+  }
+
+  static Future<UserModel> getUserWithId(String userId) async {
+    DocumentSnapshot userDocSnapshot = await usersRef.document(userId).get();
+    if (userDocSnapshot.exists) {
+      return UserModel.fromDoc(userDocSnapshot);
+    }
+    return UserModel();
+  }
 }
