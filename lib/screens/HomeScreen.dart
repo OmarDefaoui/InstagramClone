@@ -8,7 +8,6 @@ import 'package:instagram_clone/screens/SearchScreen.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
-
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -25,6 +24,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final String _currentUserId = Provider.of<UserData>(context).currentUserId;
+
     return Scaffold(
       backgroundColor: Colors.white,
       bottomNavigationBar: BottomNavigationBar(
@@ -78,7 +79,8 @@ class _HomeScreenState extends State<HomeScreen> {
             SearchScreen(),
             CreatePostScreen(),
             ActivityScreen(),
-            ProfileScreen(userId: Provider.of<UserData>(context).currentUserId),
+            ProfileScreen(
+                currentUserId: _currentUserId, userId: _currentUserId),
           ],
         ),
       ),

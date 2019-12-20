@@ -55,7 +55,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   void _submit() async {
-    if (_formKey.currentState.validate()) {
+    if (_formKey.currentState.validate() && !_isUploading) {
       _formKey.currentState.save();
       setState(() {
         _isUploading = true;
