@@ -39,7 +39,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: MyAppBar(),
+      appBar: myappbar(),
       body: FutureBuilder(
           future: usersRef.document(widget.userId).get(),
           builder: (context, snapshot) {

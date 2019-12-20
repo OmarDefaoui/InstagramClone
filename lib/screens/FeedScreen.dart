@@ -11,7 +11,7 @@ class _FeedScreenState extends State<FeedScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MyAppBar(),
+      appBar: myappbar(),
       body: Center(
         child: FlatButton(
           onPressed: () => AuthService.signOut(context),

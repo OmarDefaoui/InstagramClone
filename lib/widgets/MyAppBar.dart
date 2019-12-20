@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-Widget MyAppBar() {
+Widget myappbar() {
   return AppBar(
     backgroundColor: Colors.white,
     title: Center(
