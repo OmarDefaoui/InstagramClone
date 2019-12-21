@@ -22,7 +22,7 @@ class FirestoreService {
     postsRef.document(post.posterId).collection('userPosts').add({
       'imageUrl': post.imageUrl,
       'caption': post.caption,
-      'likes': post.likes,
+      'likeCount': post.likeCount,
       'posterId': post.posterId,
       'timestamp': post.timestamp,
     });
@@ -128,5 +128,56 @@ class FirestoreService {
       return UserModel.fromDoc(userDocSnapshot);
     }
     return UserModel();
+  }
+
+  static void likePost({String currentUserId, PostModel post}) {
+    DocumentReference postRef = postsRef
+        .document(post.posterId)
+        .collection('userPosts')
+        .document(post.id);
+    postRef.get().then((doc) {
+      int likeCount = doc.data['likeCount'];
+      postRef.updateData({'likeCount': likeCount + 1});
+
+      likesRef
+          .document(post.id)
+          .collection('postLikes')
+          .document(currentUserId)
+          .setData({});
+    });
+  }
+
+  static void unLikePost({String currentUserId, PostModel post}) {
+    DocumentReference postRef = postsRef
+        .document(post.posterId)
+        .collection('userPosts')
+        .document(post.id);
+
+    postRef.get().then((doc) {
+      int likeCount = doc.data['likeCount'];
+      postRef.updateData({'likeCount': likeCount - 1});
+
+      likesRef
+          .document(post.id)
+          .collection('postLikes')
+          .document(currentUserId)
+          .get()
+          .then((doc) {
+        if (doc.exists) {
+          doc.reference.delete();
+        }
+      });
+    });
+  }
+
+  static Future<bool> didLikePost(
+      {String currentUserId, PostModel post}) async {
+    DocumentSnapshot userDoc = await likesRef
+        .document(post.id)
+        .collection('postLikes')
+        .document(currentUserId)
+        .get();
+
+    return userDoc.exists;
   }
 }

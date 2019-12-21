@@ -155,7 +155,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
       PostModel post = PostModel(
         imageUrl: imageUrl,
         caption: _caption,
-        likes: {},
+        likeCount: 0,
         posterId: Provider.of<UserData>(context).currentUserId,
         timestamp: Timestamp.fromDate(DateTime.now()),
       );
