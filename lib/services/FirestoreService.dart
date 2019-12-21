@@ -108,6 +108,20 @@ class FirestoreService {
     return posts;
   }
 
+  static Future<List<PostModel>> getUsersPosts(String userId) async {
+    QuerySnapshot userPostsSnapshot = await postsRef
+        .document(userId)
+        .collection('userPosts')
+        .orderBy('timestamp', descending: true)
+        .getDocuments();
+
+    List<PostModel> posts = userPostsSnapshot.documents
+        .map((doc) => PostModel.fromDoc(doc))
+        .toList();
+
+    return posts;
+  }
+
   static Future<UserModel> getUserWithId(String userId) async {
     DocumentSnapshot userDocSnapshot = await usersRef.document(userId).get();
     if (userDocSnapshot.exists) {
