@@ -1,8 +1,12 @@
+import 'dart:async';
+
+import 'package:animator/animator.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_clone/models/PostModel.dart';
 import 'package:instagram_clone/models/UserModel.dart';
 import 'package:instagram_clone/screens/ProfileScreen.dart';
+import 'package:instagram_clone/services/FirestoreService.dart';
 
 class PostWidget extends StatefulWidget {
   final String currentUserId;
@@ -15,16 +19,24 @@ class PostWidget extends StatefulWidget {
 }
 
 class _PostWidgetState extends State<PostWidget> {
-  String _currentUserId;
-  PostModel _post;
-  UserModel _poster;
+  int _likeCount = 0;
+  bool _isLiked = false;
+  bool _heartAnim = false;
 
   @override
   void initState() {
     super.initState();
-    _currentUserId = widget.currentUserId;
-    _post = widget.post;
-    _poster = widget.poster;
+
+    _likeCount = widget.post.likeCount;
+    _initPostLiked();
+  }
+
+  @override
+  void didUpdateWidget(PostWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.post.likeCount != widget.post.likeCount) {
+      _likeCount = widget.post.likeCount;
+    }
   }
 
   @override
@@ -36,8 +48,8 @@ class _PostWidgetState extends State<PostWidget> {
             context,
             MaterialPageRoute(
               builder: (_) => ProfileScreen(
-                currentUserId: _currentUserId,
-                userId: _post.posterId,
+                currentUserId: widget.currentUserId,
+                userId: widget.post.posterId,
               ),
             ),
           ),
@@ -48,13 +60,14 @@ class _PostWidgetState extends State<PostWidget> {
                 CircleAvatar(
                   radius: 25,
                   backgroundColor: Colors.grey.shade200,
-                  backgroundImage: _poster.profileImageUrl.isEmpty
+                  backgroundImage: widget.poster.profileImageUrl.isEmpty
                       ? AssetImage('assets/images/user_placeholder.jpg')
-                      : CachedNetworkImageProvider(_poster.profileImageUrl),
+                      : CachedNetworkImageProvider(
+                          widget.poster.profileImageUrl),
                 ),
                 SizedBox(width: 8),
                 Text(
-                  _poster.username,
+                  widget.poster.username,
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
@@ -64,13 +77,36 @@ class _PostWidgetState extends State<PostWidget> {
             ),
           ),
         ),
-        Container(
-          height: MediaQuery.of(context).size.width,
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: CachedNetworkImageProvider(_post.imageUrl),
-              fit: BoxFit.cover,
-            ),
+        GestureDetector(
+          onDoubleTap: _likeOrUnlikePost,
+          child: Stack(
+            alignment: Alignment.center,
+            children: <Widget>[
+              Container(
+                height: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: CachedNetworkImageProvider(widget.post.imageUrl),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              _heartAnim
+                  ? Animator(
+                      duration: Duration(milliseconds: 300),
+                      tween: Tween(begin: 0.5, end: 1.4),
+                      curve: Curves.elasticOut,
+                      builder: (anim) => Transform.scale(
+                        scale: anim.value,
+                        child: Icon(
+                          Icons.favorite,
+                          size: 100,
+                          color: Colors.red.shade400,
+                        ),
+                      ),
+                    )
+                  : SizedBox.shrink(),
+            ],
           ),
         ),
         Padding(
@@ -81,9 +117,11 @@ class _PostWidgetState extends State<PostWidget> {
               Row(
                 children: <Widget>[
                   IconButton(
-                    icon: Icon(Icons.favorite_border),
+                    icon: _isLiked
+                        ? Icon(Icons.favorite, color: Colors.red)
+                        : Icon(Icons.favorite_border),
                     iconSize: 30,
-                    onPressed: () {},
+                    onPressed: _likeOrUnlikePost,
                   ),
                   IconButton(
                     icon: Icon(Icons.comment),
@@ -95,7 +133,7 @@ class _PostWidgetState extends State<PostWidget> {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 12),
                 child: Text(
-                  '0 likes',
+                  '$_likeCount likes',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -108,7 +146,7 @@ class _PostWidgetState extends State<PostWidget> {
                   Container(
                     margin: EdgeInsets.only(left: 12, right: 6),
                     child: Text(
-                      _poster.username,
+                      widget.poster.username,
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -117,7 +155,7 @@ class _PostWidgetState extends State<PostWidget> {
                   ),
                   Expanded(
                     child: Text(
-                      _post.caption,
+                      widget.post.caption,
                       style: TextStyle(
                         fontSize: 16,
                       ),
@@ -132,5 +170,47 @@ class _PostWidgetState extends State<PostWidget> {
         ),
       ],
     );
+  }
+
+  _initPostLiked() async {
+    bool isLiked = await FirestoreService.didLikePost(
+      currentUserId: widget.currentUserId,
+      post: widget.post,
+    );
+
+    if (mounted)
+      setState(() {
+        _isLiked = isLiked;
+      });
+  }
+
+  _likeOrUnlikePost() {
+    if (_isLiked) {
+      //unLike the post
+      FirestoreService.unLikePost(
+        currentUserId: widget.currentUserId,
+        post: widget.post,
+      );
+      setState(() {
+        _isLiked = false;
+        _likeCount -= 1;
+      });
+    } else {
+      //like the post
+      FirestoreService.likePost(
+        currentUserId: widget.currentUserId,
+        post: widget.post,
+      );
+      setState(() {
+        _heartAnim = true;
+        _isLiked = true;
+        _likeCount += 1;
+      });
+      Timer(Duration(milliseconds: 350), () {
+        setState(() {
+          _heartAnim = false;
+        });
+      });
+    }
   }
 }
