@@ -4,9 +4,10 @@ import 'package:instagram_clone/models/UserData.dart';
 import 'package:instagram_clone/screens/HomeScreen.dart';
 import 'package:instagram_clone/screens/LoginScreen.dart';
 import 'package:instagram_clone/screens/SignUpScreen.dart';
+import 'package:instagram_clone/screens/SplashScreen.dart';
 import 'package:provider/provider.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(SplashScreen());
 
 class MyApp extends StatelessWidget {
   Widget _getScreenId() {
