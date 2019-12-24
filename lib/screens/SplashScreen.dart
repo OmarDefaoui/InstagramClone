@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:flutter/material.dart';
+import 'package:instagram_clone/errors/NoInternetScreen.dart';
 import 'package:instagram_clone/main.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -10,54 +11,52 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  bool _hasInternet = false;
+  BuildContext _context;
+
+  @override
+  void initState() {
+    super.initState();
+    _getScreen();
+  }
 
   _getScreen() async {
     bool result = await DataConnectionChecker().hasConnection;
-    if (_hasInternet == true) {
-      print('YAY! Free cute dog pics!');
+    if (result == true) {
+      print('We have internet');
     } else {
-      print('No internet :( Reason:');
+      print('No internet');
     }
-    setState(() {
-      _hasInternet = result;
+
+    Future.delayed(Duration(seconds: 2), () {
+      switch (result) {
+        case true:
+          Navigator.push(
+            _context,
+            MaterialPageRoute(builder: (_) => MyApp()),
+          );
+          break;
+        case false:
+          Navigator.push(
+            _context,
+            MaterialPageRoute(builder: (_) => NoInternetScreen()),
+          );
+          break;
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    _context = context;
     return Scaffold(
-      backgroundColor: Colors.red,
-      body: Stack(children: <Widget>[
-        Center(
-          child: Icon(
-            Icons.supervisor_account,
-            size: 50,
-            color: Colors.green,
-          ),
+      backgroundColor: Colors.white,
+      body: Center(
+        child: Icon(
+          Icons.home,
+          size: 300,
+          color: Colors.blue,
         ),
-        FutureBuilder(
-          future: _getScreen(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              if (_hasInternet) {
-                Timer(Duration(seconds: 3), () {
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (_) => MyApp()),
-                    (_) => false,
-                  );
-                });
-
-                return MyApp();
-              }
-              return Center(
-                child: Text('No internet'),
-              );
-            }
-          },
-        ),
-      ]),
+      ),
     );
   }
 }
