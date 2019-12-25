@@ -11,15 +11,28 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  BuildContext _context;
-
   @override
-  void initState() {
-    super.initState();
-    _getScreen();
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        backgroundColor: Colors.white,
+        body: Builder(
+          builder: (context) {
+            _getScreen(context);
+            return Center(
+              child: Icon(
+                Icons.home,
+                size: 300,
+                color: Colors.blue,
+              ),
+            );
+          },
+        ),
+      ),
+    );
   }
 
-  _getScreen() async {
+  _getScreen(context) async {
     bool result = await DataConnectionChecker().hasConnection;
     if (result == true) {
       print('We have internet');
@@ -27,36 +40,23 @@ class _SplashScreenState extends State<SplashScreen> {
       print('No internet');
     }
 
-    Future.delayed(Duration(seconds: 2), () {
+    Future.delayed(Duration(seconds: 1), () {
       switch (result) {
         case true:
-          Navigator.push(
-            _context,
+          Navigator.pushAndRemoveUntil(
+            context,
             MaterialPageRoute(builder: (_) => MyApp()),
+            (_) => false,
           );
           break;
         case false:
-          Navigator.push(
-            _context,
+          Navigator.pushAndRemoveUntil(
+            context,
             MaterialPageRoute(builder: (_) => NoInternetScreen()),
+            (_) => false,
           );
           break;
       }
     });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    _context = context;
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Center(
-        child: Icon(
-          Icons.home,
-          size: 300,
-          color: Colors.blue,
-        ),
-      ),
-    );
   }
 }
