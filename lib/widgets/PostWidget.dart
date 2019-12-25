@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_clone/models/PostModel.dart';
 import 'package:instagram_clone/models/UserModel.dart';
+import 'package:instagram_clone/screens/CommentsScreen.dart';
 import 'package:instagram_clone/screens/ProfileScreen.dart';
 import 'package:instagram_clone/services/FirestoreService.dart';
 
@@ -126,7 +127,12 @@ class _PostWidgetState extends State<PostWidget> {
                   IconButton(
                     icon: Icon(Icons.comment),
                     iconSize: 30,
-                    onPressed: () {},
+                    onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) =>
+                              CommentsScreen(postId: widget.post.id),
+                        )),
                   ),
                 ],
               ),

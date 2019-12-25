@@ -39,6 +39,7 @@ dependencies:
   uuid: ^2.0.4
   animator: ^1.0.0+3
   data_connection_checker: ^0.3.4
+  intl: ^0.16.0
 
 dev_dependencies:
   flutter_test:
