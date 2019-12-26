@@ -5,6 +5,7 @@ import 'package:instagram_clone/models/UserData.dart';
 import 'package:instagram_clone/models/UserModel.dart';
 import 'package:instagram_clone/services/FirestoreService.dart';
 import 'package:instagram_clone/utilities/Constants.dart';
+import 'package:instagram_clone/utilities/TimeAgo.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -88,6 +89,9 @@ class _CommentsScreenState extends State<CommentsScreen> {
               SizedBox(height: 6.0),
               Text(
                 DateFormat.yMd().add_jm().format(comment.timestamp.toDate()),
+              ),
+              Text(
+                TimeAgo().format(comment.timestamp.toDate()),
               ),
             ],
           ),

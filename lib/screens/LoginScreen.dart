@@ -12,15 +12,24 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   String _email, _password;
+  bool _isPerforming = false;
 
-  void _submit() {
+  void _submit() async {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
+      setState(() {
+        _isPerforming = true;
+      });
+
       print(_email);
       print(_password);
       //login user
 
-      AuthService.login(context, _email, _password);
+      bool loginSuccess = await AuthService.login(context, _email, _password);
+      setState(() {
+        print('in set satte: $_isPerforming');
+        _isPerforming = loginSuccess;
+      });
     }
   }
 
@@ -69,18 +78,20 @@ class _LoginScreenState extends State<LoginScreen> {
                         SizedBox(height: 20),
                         Container(
                           width: 250,
-                          child: FlatButton(
-                            padding: EdgeInsets.all(10),
-                            onPressed: _submit,
-                            color: Colors.blue,
-                            child: Text(
-                              'Login',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
-                              ),
-                            ),
-                          ),
+                          child: _isPerforming
+                              ? Center(child: CircularProgressIndicator())
+                              : FlatButton(
+                                  padding: EdgeInsets.all(10),
+                                  onPressed: _submit,
+                                  color: Colors.blue,
+                                  child: Text(
+                                    'Login',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                ),
                         ),
                         SizedBox(height: 20),
                         Container(

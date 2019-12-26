@@ -8,14 +8,14 @@ class AuthService {
   static final _auth = FirebaseAuth.instance;
   static final _firestore = Firestore.instance;
 
-  static Future signUpUser(
+  static Future<bool> signUpUser(
       BuildContext context, String name, String email, String password) async {
     try {
       AuthResult _authResult = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
       FirebaseUser signedInUser = _authResult.user;
       if (signedInUser != null) {
-        _firestore.collection('/users').document(signedInUser.uid).setData({
+        await _firestore.collection('/users').document(signedInUser.uid).setData({
           'username': name,
           'email': email,
           'profileImageUrl': '',
@@ -26,14 +26,21 @@ class AuthService {
     } catch (e) {
       print(e);
     }
+    return false;
   }
 
-  static void login(BuildContext context, String email, String password) async {
+  static Future<bool> login(
+      BuildContext context, String email, String password) async {
     try {
-      _auth.signInWithEmailAndPassword(email: email, password: password);
+      await _auth
+          .signInWithEmailAndPassword(email: email, password: password)
+          .catchError((error) {
+        print('$error');
+      });
     } catch (e) {
       print(e);
     }
+    return false;
   }
 
   static void signOut(BuildContext context) {

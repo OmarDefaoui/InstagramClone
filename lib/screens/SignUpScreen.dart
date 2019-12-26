@@ -11,16 +11,25 @@ class SignUpScreen extends StatefulWidget {
 class _SignUpScreenState extends State<SignUpScreen> {
   final _formKey = GlobalKey<FormState>();
   String _username, _email, _password;
+  bool _isPerforming = false;
 
-  void _submit() {
+  void _submit() async{
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
+      setState(() {
+        _isPerforming = true;
+      });
+
       print(_username);
       print(_email);
       print(_password);
       //login user
 
-      AuthService.signUpUser(context, _username, _email, _password);
+      bool signupSuccess = await AuthService.signUpUser(context, _username, _email, _password);
+      setState(() {
+        print('in set satte: $_isPerforming');
+        _isPerforming = signupSuccess;
+      });
     }
   }
 
@@ -77,7 +86,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           obscureText: true,
                         ),
                         SizedBox(height: 20),
-                        Container(
+                        _isPerforming
+                              ? Center(child: CircularProgressIndicator())
+                              :Container(
                           width: 250,
                           child: FlatButton(
                             padding: EdgeInsets.all(10),
