@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:instagram_clone/models/UserModel.dart';
 import 'package:instagram_clone/services/FirestoreService.dart';
@@ -32,13 +33,50 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     _bio = _userModel.bio;
   }
 
-  void _handkeImageFromGallery() async {
-    File _imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
-    if (_imageFile != null) {
+  _showSelectImageDialog() {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return SimpleDialog(
+          title: Text('Add photo'),
+          children: <Widget>[
+            SimpleDialogOption(
+              child: Text('Take Photo'),
+              onPressed: () => _handleImage(ImageSource.camera),
+            ),
+            SimpleDialogOption(
+              child: Text('Choose from gallery'),
+              onPressed: () => _handleImage(ImageSource.gallery),
+            ),
+            SimpleDialogOption(
+              child: Text('Cancel', style: TextStyle(color: Colors.redAccent)),
+              onPressed: () => Navigator.pop(context),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  _handleImage(ImageSource source) async {
+    Navigator.of(context, rootNavigator: true).pop();
+    File imageFile = await ImagePicker.pickImage(source: source);
+
+    if (imageFile != null) {
+      imageFile = await _cropImage(imageFile);
       setState(() {
-        _profileImage = _imageFile;
+        _profileImage = imageFile;
       });
     }
+  }
+
+  _cropImage(File imageFile) async {
+    File croppedImage = await ImageCropper.cropImage(
+      sourcePath: imageFile.path,
+      aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
+    );
+
+    return croppedImage;
   }
 
   _displayProfileImage() {
@@ -118,7 +156,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       backgroundImage: _displayProfileImage(),
                     ),
                     FlatButton(
-                      onPressed: _handkeImageFromGallery,
+                      onPressed: _showSelectImageDialog,
                       child: Text(
                         'Change Profile Image',
                         style: TextStyle(
