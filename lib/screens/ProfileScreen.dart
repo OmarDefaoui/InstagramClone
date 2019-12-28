@@ -320,7 +320,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   _setupPosts() async {
     List<PostModel> posts =
-        await FirestoreService.getUsersPosts(widget.currentUserId);
+        await FirestoreService.getUsersPosts(widget.userId);
     setState(() {
       _posts = posts;
     });

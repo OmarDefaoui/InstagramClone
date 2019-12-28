@@ -124,7 +124,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   }
 
   _handleImage(ImageSource source) async {
-    Navigator.pop(context);
+    Navigator.of(context, rootNavigator: true).pop();
     File imageFile = await ImagePicker.pickImage(source: source);
 
     if (imageFile != null) {

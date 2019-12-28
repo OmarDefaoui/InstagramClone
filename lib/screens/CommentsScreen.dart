@@ -6,7 +6,6 @@ import 'package:instagram_clone/models/UserModel.dart';
 import 'package:instagram_clone/services/FirestoreService.dart';
 import 'package:instagram_clone/utilities/Constants.dart';
 import 'package:instagram_clone/utilities/TimeAgo.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class CommentsScreen extends StatefulWidget {
