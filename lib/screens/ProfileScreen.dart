@@ -4,6 +4,7 @@ import 'package:instagram_clone/models/PostModel.dart';
 import 'package:instagram_clone/models/UserData.dart';
 import 'package:instagram_clone/models/UserModel.dart';
 import 'package:instagram_clone/screens/EditProfileScreen.dart';
+import 'package:instagram_clone/services/AuthService.dart';
 import 'package:instagram_clone/services/FirestoreService.dart';
 import 'package:instagram_clone/utilities/Constants.dart';
 import 'package:instagram_clone/widgets/PostWidget.dart';
@@ -45,6 +46,44 @@ class _ProfileScreenState extends State<ProfileScreen> {
             color: Colors.black,
           ),
         ),
+        actions: <Widget>[
+          PopupMenuButton<String>(
+            itemBuilder: (context) {
+              return [
+                PopupMenuItem(
+                  value: 'settings',
+                  child: Text('settings'),
+                ),
+                PopupMenuItem(
+                  value: 'rate',
+                  child: Text('Rate app'),
+                ),
+                PopupMenuItem(
+                  value: 'share',
+                  child: Text('Share app'),
+                ),
+                PopupMenuItem(
+                  value: 'logout',
+                  child: Text(
+                    'Logout',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ];
+            },
+            onSelected: (value) {
+              print(value);
+              switch (value) {
+                case 'logout':
+                  Navigator.of(context).popUntil((route) => route.isFirst);
+                  AuthService.signOut(context);
+                  break;
+              }
+            },
+          ),
+        ],
       ),
       body: FutureBuilder(
           future: usersRef.document(widget.userId).get(),
@@ -319,8 +358,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   _setupPosts() async {
-    List<PostModel> posts =
-        await FirestoreService.getUsersPosts(widget.userId);
+    List<PostModel> posts = await FirestoreService.getUsersPosts(widget.userId);
     setState(() {
       _posts = posts;
     });
