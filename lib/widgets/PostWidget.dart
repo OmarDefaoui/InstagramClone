@@ -131,7 +131,7 @@ class _PostWidgetState extends State<PostWidget> {
                         context,
                         MaterialPageRoute(
                           builder: (_) =>
-                              CommentsScreen(postId: widget.post.id),
+                              CommentsScreen(post: widget.post),
                         )),
                   ),
                 ],

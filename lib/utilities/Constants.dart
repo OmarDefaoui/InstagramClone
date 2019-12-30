@@ -11,3 +11,4 @@ final followingRef = _fireStore.collection('following');
 final feedsRef = _fireStore.collection('feeds');
 final likesRef = _fireStore.collection('likes');
 final commentsRef = _fireStore.collection('comments');
+final activitiesRef = _fireStore.collection('activities');

@@ -78,9 +78,11 @@ class _HomeScreenState extends State<HomeScreen> {
             FeedScreen(currentUserId: _currentUserId),
             SearchScreen(),
             CreatePostScreen(),
-            ActivityScreen(),
+            ActivityScreen(currentUserId: _currentUserId),
             ProfileScreen(
-                currentUserId: _currentUserId, userId: _currentUserId),
+              currentUserId: _currentUserId,
+              userId: _currentUserId,
+            ),
           ],
         ),
       ),

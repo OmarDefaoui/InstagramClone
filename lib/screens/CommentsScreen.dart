@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_clone/models/CommentModel.dart';
+import 'package:instagram_clone/models/PostModel.dart';
 import 'package:instagram_clone/models/UserData.dart';
 import 'package:instagram_clone/models/UserModel.dart';
 import 'package:instagram_clone/services/FirestoreService.dart';
@@ -9,9 +10,9 @@ import 'package:instagram_clone/utilities/TimeAgo.dart';
 import 'package:provider/provider.dart';
 
 class CommentsScreen extends StatefulWidget {
-  final String postId;
+  final PostModel post;
 
-  CommentsScreen({this.postId});
+  CommentsScreen({this.post});
 
   @override
   _CommentsScreenState createState() => _CommentsScreenState();
@@ -35,7 +36,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
         children: <Widget>[
           StreamBuilder(
             stream: commentsRef
-                .document(widget.postId)
+                .document(widget.post.id)
                 .collection('postComments')
                 .orderBy('timestamp', descending: true)
                 .snapshots(),
@@ -131,7 +132,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
                   if (_isCommenting) {
                     FirestoreService.commentOnPost(
                       currentUserId: currentUserId,
-                      postId: widget.postId,
+                      post: widget.post,
                       comment: _commentController.text,
                     );
                     _commentController.clear();
